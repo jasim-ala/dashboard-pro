@@ -3,6 +3,8 @@ import { DollarSign, TrendingUp, Users, Sparkles, Activity, ArrowUpRight, Downlo
 import WholesalePipeline from '@/components/WholesalePipeline'
 import ExportButton from '@/components/ExportButton'
 import NetSalesChart from '@/components/NetSalesChart'
+import BrandShareChart from '@/components/BrandShareChart'
+import CategoryBreakdownChart from '@/components/CategoryBreakdownChart'
 
 export default async function SalesDashboard() {
   const [metrics, transactions] = await Promise.all([
@@ -104,6 +106,7 @@ export default async function SalesDashboard() {
       </div>
 
       <div className="visuals-grid">
+        {/* Main Line Chart (Spans 2 columns) */}
         <div className="visual-card glass-panel large-card">
           <div className="card-title-panel">
             <div className="panel-tag">REVENUE TRENDS</div>
@@ -111,6 +114,28 @@ export default async function SalesDashboard() {
           </div>
           <div className="chart-canvas-container" style={{ minHeight: '340px', padding: '1rem 0' }}>
             <NetSalesChart transactions={transactions} />
+          </div>
+        </div>
+
+        {/* Brand Share Doughnut Chart */}
+        <div className="visual-card glass-panel">
+          <div className="card-title-panel">
+            <div className="panel-tag" style={{ color: 'var(--accent-cyan)' }}>BRAND SEGMENTATION</div>
+            <h3>REVENUE SHARE BY BRAND (USD)</h3>
+          </div>
+          <div className="chart-canvas-container" style={{ padding: '0.5rem 0' }}>
+            <BrandShareChart transactions={transactions} />
+          </div>
+        </div>
+
+        {/* Product Category Bar Chart */}
+        <div className="visual-card glass-panel">
+          <div className="card-title-panel">
+            <div className="panel-tag" style={{ color: 'var(--accent-purple)' }}>PRODUCT BREAKDOWN</div>
+            <h3>REVENUE BY SEGMENT SEGREGATION</h3>
+          </div>
+          <div className="chart-canvas-container" style={{ padding: '0.5rem 0' }}>
+            <CategoryBreakdownChart transactions={transactions} />
           </div>
         </div>
       </div>
