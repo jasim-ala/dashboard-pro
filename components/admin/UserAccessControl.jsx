@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useRef, useEffect, useState } from 'react'
-import { addUser } from '@/app/actions'
+import { addUserAccount } from '@/app/actions'
 import { UserPlus, Shield, User2, Mail, RefreshCw, Loader2 } from 'lucide-react'
 import { useToast } from '@/components/ToastProvider'
 
@@ -30,11 +30,11 @@ export default function UserAccessControl({ users = [] }) {
   const formRef = useRef(null)
   const [optimisticUsers, setOptimisticUsers] = useState(users)
   const [pendingRoleId, setPendingRoleId] = useState(null)
-  const [state, formAction, isPending] = useActionState(addUser, initialState)
+  const [state, formAction, isPending] = useActionState(addUserAccount, initialState)
 
   useEffect(() => {
     if (state.success) {
-      toast('User added / updated successfully.', 'success')
+      toast('Clerk account provisioned & DB synced successfully.', 'success')
       formRef.current?.reset()
     } else if (state.error) {
       toast(state.error, 'error')
@@ -79,6 +79,17 @@ export default function UserAccessControl({ users = [] }) {
             <input name="email" type="email" required placeholder="user@example.com" className="field-input" />
           </div>
           <div className="form-field">
+            <label className="field-label">Password</label>
+            <input
+              name="password"
+              type="password"
+              required
+              placeholder="Min 8 chars, 1 number"
+              minLength={8}
+              className="field-input"
+            />
+          </div>
+          <div className="form-field">
             <label className="field-label">Assign Role</label>
             <select name="role" required className="field-select">
               <option value="User">User</option>
@@ -86,11 +97,12 @@ export default function UserAccessControl({ users = [] }) {
               <option value="Sales Director">Sales Director</option>
             </select>
           </div>
-          <div className="form-field">
-            <label className="field-label">&nbsp;</label>
+        </div>
+        <div className="form-grid-3" style={{ marginTop: '0.5rem' }}>
+          <div className="form-field" style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end' }}>
             <button type="submit" className="btn-primary btn-amber" disabled={isPending}>
               {isPending ? <Loader2 size={14} className="spin" /> : <UserPlus size={14} />}
-              {isPending ? 'Saving...' : 'Add User'}
+              {isPending ? 'Provisioning...' : 'Create Clerk Account'}
             </button>
           </div>
         </div>

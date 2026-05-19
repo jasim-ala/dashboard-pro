@@ -117,18 +117,52 @@ export async function getUsers() {
   }
 }
 
-export async function addUser(prevState, formData) {
-  try {
-    const email = formData.get('email')
-    const role = formData.get('role')
-    await sql`INSERT INTO users (email, role) VALUES (${email}, ${role}) ON CONFLICT (email) DO UPDATE SET role = ${role}`
-    await logAudit('USER_ADDED', `User ${email} added/updated with role ${role}`)
-    revalidatePath('/admin')
-    return { success: true }
-  } catch (err) {
-    console.error('Failed to add user:', err)
-    return { error: 'Failed to add user' }
+export async function addUserAccount(prevState, formData) {
+  const email    = formData.get('email')?.trim()
+  const password = formData.get('password')
+  const role     = formData.get('role') || 'User'
+
+  if (!email || !password) {
+    return { error: 'Email and password are required.' }
   }
+
+  let clerkUser
+  try {
+    // 1️⃣  Provision the real Clerk account
+    const client = await clerkClient()
+    clerkUser = await client.users.createUser({
+      emailAddress: [email],
+      password,
+      publicMetadata: { role },
+    })
+  } catch (err) {
+    // Surface Clerk's own error message (e.g. "Password too weak", "Email already taken")
+    const clerkMsg =
+      err?.errors?.[0]?.longMessage ||
+      err?.errors?.[0]?.message ||
+      err?.message ||
+      'Clerk could not create the user.'
+    console.error('Clerk createUser failed:', clerkMsg)
+    return { error: clerkMsg }
+  }
+
+  try {
+    // 2️⃣  Sync the new Clerk user ID into the local DB
+    await sql`
+      INSERT INTO users (clerk_id, email, role)
+      VALUES (${clerkUser.id}, ${email}, ${role})
+      ON CONFLICT (email)
+      DO UPDATE SET clerk_id = ${clerkUser.id}, role = ${role}
+    `
+    await logAudit('USER_PROVISIONED', `Clerk account created for ${email} with role ${role}`)
+  } catch (dbErr) {
+    // Clerk account was created but DB sync failed — log it, don't block the admin
+    console.error('DB sync after Clerk createUser failed:', dbErr)
+    await logAudit('USER_DB_SYNC_FAILED', `Clerk account created for ${email} but DB sync failed`)
+  }
+
+  revalidatePath('/admin')
+  return { success: true, clerkId: clerkUser.id }
 }
 
 export async function updateUserRole(userId, clerkId, newRole, email) {
