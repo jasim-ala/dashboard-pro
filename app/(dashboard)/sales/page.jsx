@@ -2,6 +2,7 @@ import { getDashboardMetrics, getSalesTransactions } from '@/app/actions'
 import { DollarSign, TrendingUp, Users, Sparkles, Activity, ArrowUpRight, Download, ChevronDown } from 'lucide-react'
 import WholesalePipeline from '@/components/WholesalePipeline'
 import ExportButton from '@/components/ExportButton'
+import NetSalesChart from '@/components/NetSalesChart'
 
 export default async function SalesDashboard() {
   const [metrics, transactions] = await Promise.all([
@@ -102,15 +103,14 @@ export default async function SalesDashboard() {
         </div>
       </div>
 
-      {/* Chart Placeholder */}
       <div className="visuals-grid">
         <div className="visual-card glass-panel large-card">
           <div className="card-title-panel">
             <div className="panel-tag">REVENUE TRENDS</div>
             <h3>NET SALES REVENUE OVER TIME (USD)</h3>
           </div>
-          <div className="chart-canvas-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Chart visualisation coming soon — add transactions below to begin.</p>
+          <div className="chart-canvas-container" style={{ minHeight: '340px', padding: '1rem 0' }}>
+            <NetSalesChart transactions={transactions} />
           </div>
         </div>
       </div>
