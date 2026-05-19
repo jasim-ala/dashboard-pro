@@ -1,0 +1,306 @@
+/* ==========================================================================
+   NEBULA CORE // GLOBAL DESIGN SYSTEM & VARIABLES
+   ========================================================================== */
+
+:root {
+  /* Clean Slate Color System (SaaS Standard) */
+  --bg-space: #0f172a;
+  --bg-space-rgb: 15, 23, 42;
+  --bg-charcoal: #1e293b;
+  --bg-charcoal-rgb: 30, 41, 59;
+  --bg-glass: rgba(30, 41, 59, 0.85);
+  --bg-glass-heavy: rgba(15, 23, 42, 0.95);
+  
+  --accent-cyan: #0284c7;
+  --accent-cyan-rgb: 2, 132, 199;
+  --accent-purple: #6366f1;
+  --accent-purple-rgb: 99, 102, 241;
+  --accent-amber: #f59e0b;
+  --accent-amber-rgb: 245, 158, 11;
+  --accent-green: #10b981;
+  --accent-green-rgb: 16, 185, 129;
+  --accent-red: #ef4444;
+  --accent-red-rgb: 239, 68, 68;
+  
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dark: #334155;
+  
+  --border-glass: #334155;
+  --border-glass-cyan: rgba(2, 132, 199, 0.25);
+  --border-glass-purple: rgba(99, 102, 241, 0.25);
+  
+  /* Typography Variables (Standard Clean) */
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Plus Jakarta Sans', var(--font-main);
+  --font-mono: -apple-system-ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  /* Standard SaaS Elevation Shadows */
+  --shadow-neon-cyan: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-neon-purple: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-neon-amber: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-glass: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  
+  /* Layout Constants */
+  --sidebar-width-expanded: 260px;
+  --sidebar-width-collapsed: 76px;
+  --topbar-height: 70px;
+  --border-radius: 8px;
+  --border-radius-sm: 4px;
+  
+  /* Animation Timing */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   STANDARD CLEAN FROSTED WHITE / LIGHT GLOW THEME OVERRIDES
+   ========================================================================== */
+
+body.light-theme {
+  --bg-space: #f8fafc;
+  --bg-space-rgb: 248, 250, 252;
+  
+  --bg-charcoal: #ffffff;
+  --bg-charcoal-rgb: 255, 255, 255;
+  
+  --bg-glass: rgba(255, 255, 255, 0.9);
+  --bg-glass-heavy: #ffffff;
+  
+  --accent-cyan: #0284c7;
+  --accent-cyan-rgb: 2, 132, 199;
+  
+  --accent-purple: #6366f1;
+  --accent-purple-rgb: 99, 102, 241;
+  
+  --accent-amber: #d97706;
+  --accent-amber-rgb: 217, 119, 6;
+  
+  --accent-green: #059669;
+  --accent-green-rgb: 5, 150, 105;
+  
+  --accent-red: #dc2626;
+  --accent-red-rgb: 220, 38, 38;
+  
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+  --text-dark: #e2e8f0;
+  
+  --border-glass: #e2e8f0;
+  --border-glass-cyan: rgba(2, 132, 199, 0.2);
+  --border-glass-purple: rgba(99, 102, 241, 0.2);
+  
+  --shadow-neon-cyan: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-neon-purple: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-neon-amber: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-glass: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme #particle-canvas {
+  background: var(--bg-space);
+}
+
+body.light-theme .interactive-glow {
+  display: none !important;
+}
+
+body.light-theme ::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.1);
+}
+
+/* ==========================================================================
+   RESET & FOUNDATIONS
+   ========================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-space);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+  scroll-behavior: smooth;
+}
+
+body.space-theme {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Custom Cyber Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-space);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid var(--border-glass);
+  transition: var(--transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan);
+  box-shadow: var(--shadow-neon-cyan);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ==========================================================================
+   MATRIX BACKGROUND & CURSOR GLOW EFFECTS
+   ========================================================================== */
+
+#particle-canvas {
+  display: none !important;
+}
+
+.interactive-glow {
+  display: none !important;
+}
+
+/* ==========================================================================
+   GLASSMORPHISM PRIMES & COMMONS
+   ========================================================================== */
+
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-glass);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+  transition: 0.75s ease;
+}
+
+.glass-panel:hover::before {
+  left: 120%;
+}
+
+/* ==========================================================================
+   CINEMATIC PAGE STATE TRANSITIONS & SCREEN WARP
+   ========================================================================== */
+
+.screen-warp {
+  display: none !important;
+}
+
+/* ==========================================================================
+   GLOBAL UTILITIES
+   ========================================================================== */
+
+.hidden {
+  display: none !important;
+}
+
+.invisible-fade {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.row-layout {
+  display: flex;
+  align-items: center;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Glow Pill Classes */
+.glow-cyan {
+  color: var(--accent-cyan);
+  text-shadow: var(--shadow-neon-cyan);
+}
+
+.glow-purple {
+  color: var(--accent-purple);
+  text-shadow: var(--shadow-neon-purple);
+}
+
+.glow-green {
+  color: var(--accent-green);
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.25);
+}
+
+.glow-amber {
+  color: var(--accent-amber);
+  text-shadow: var(--shadow-neon-amber);
+}
+
+.glow-red {
+  color: var(--accent-red);
+  text-shadow: 0 0 10px rgba(255, 51, 102, 0.25);
+}

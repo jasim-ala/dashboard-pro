@@ -1,0 +1,325 @@
+/* ==========================================================================
+   NEBULA CORE // AUTHENTICATION GLASS SUITE
+   ========================================================================== */
+
+.auth-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 2;
+  position: relative;
+  overflow: hidden;
+  transition: opacity var(--transition-slow) ease-out, transform var(--transition-slow) ease-out;
+}
+
+/* Auth Brand Header */
+.auth-brand {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-hexagon {
+  width: 64px;
+  height: 64px;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1.5px solid var(--accent-cyan);
+  box-shadow: var(--shadow-neon-cyan);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: logoPulse 2.5s infinite alternate;
+}
+
+.hexagon-inner {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.auth-brand h1 {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.brand-tagline {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-cyan);
+  letter-spacing: 0.3em;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+}
+
+/* Central Card Holder */
+.auth-card-container {
+  width: 100%;
+  max-width: 480px;
+  perspective: 1000px;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.auth-card {
+  width: 100%;
+  background: var(--bg-glass-heavy);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--shadow-glass);
+  padding: 2.5rem;
+  transition: transform var(--transition-medium);
+}
+
+.auth-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tabs Switches */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 2rem;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 1rem 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: var(--transition-fast);
+  text-align: center;
+}
+
+.auth-tab.active {
+  color: var(--accent-cyan);
+  border-bottom-color: var(--accent-cyan);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+#tab-signup.active {
+  color: var(--accent-purple);
+  border-bottom-color: var(--accent-purple);
+  text-shadow: 0 0 10px rgba(161, 0, 255, 0.3);
+}
+
+/* Auth Forms */
+.auth-form {
+  display: none;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeScale 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-form.active {
+  display: flex;
+}
+
+.form-instructions {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+/* Input Fields & Glowing Wrappers */
+.input-glow-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.input-glow-wrapper input {
+  width: 100%;
+  padding: 1.1rem 1rem 0.6rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: var(--transition-fast);
+}
+
+.input-glow-wrapper label {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  transition: var(--transition-fast);
+}
+
+.input-glow-wrapper input:focus,
+.input-glow-wrapper input:not(:placeholder-shown) {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: transparent;
+}
+
+.input-glow-wrapper input:focus ~ label,
+.input-glow-wrapper input:not(:placeholder-shown) ~ label {
+  top: 0.65rem;
+  font-size: 0.6rem;
+  color: var(--accent-cyan);
+}
+
+#signup-form .input-glow-wrapper input:focus ~ label,
+#signup-form .input-glow-wrapper input:not(:placeholder-shown) ~ label {
+  color: var(--accent-purple);
+}
+
+/* Inner borders that expand from center on focus */
+.input-glow-border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+
+#signup-form .input-glow-border {
+  background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
+}
+
+.input-glow-wrapper input:focus ~ .input-glow-border {
+  transform: scaleX(1);
+}
+
+/* Custom Field Icons */
+.field-icon {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  transition: var(--transition-fast);
+}
+
+.eye-toggle {
+  cursor: pointer;
+}
+
+.eye-toggle:hover {
+  color: var(--text-primary);
+}
+
+.input-glow-wrapper input:focus ~ .field-icon {
+  color: var(--accent-cyan);
+}
+
+#signup-form .input-glow-wrapper input:focus ~ .field-icon {
+  color: var(--accent-purple);
+}
+
+/* Form Options (Checkbox & Forgot Link) */
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0.25rem 0;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-container input {
+  display: none;
+}
+
+.checkbox-glow {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border-glass);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.02);
+  display: inline-block;
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+.checkbox-container input:checked ~ .checkbox-glow {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
+  background: var(--accent-cyan);
+}
+
+.checkbox-container input:checked ~ .checkbox-glow::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 3px;
+  height: 7px;
+  border: solid var(--bg-space);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+#signup-form .checkbox-container input:checked ~ .checkbox-glow {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 5px rgba(161, 0, 255, 0.5);
+  background: var(--accent-purple);
+}
+
+.forgot-link {
+  transition: var(--transition-fast);
+}
+
+.forgot-link:hover {
+  color: var(--accent-cyan);
+  text-shadow: 0 0 5px rgba(0, 240, 255, 0.2);
+}
+
+/* Keyframe Animations */
+@keyframes fadeInDown {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes logoPulse {
+  0% { box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); border-color: rgba(0, 240, 255, 0.6); }
+  100% { box-shadow: 0 0 25px rgba(0, 240, 255, 0.5), inset 0 0 10px rgba(0, 240, 255, 0.3); border-color: rgba(0, 240, 255, 1); }
+}
+
+@keyframes fadeScale {
+  0% { opacity: 0; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}

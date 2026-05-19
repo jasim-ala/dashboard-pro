@@ -1,0 +1,38 @@
+{
+  "name": "nebula-core-dashboard",
+  "version": "1.0.0",
+  "description": "NEBULA CORE // B2B Telemetry Hub - Premium futuristic Sales & Admin Dashboard.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "next dev -p 8085",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [
+    "cyberpunk",
+    "dashboard",
+    "telemetry",
+    "b2b",
+    "apparel",
+    "admin"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "dependencies": {
+    "@clerk/nextjs": "^7.3.5",
+    "@clerk/themes": "^2.4.57",
+    "@neondatabase/serverless": "^1.1.0",
+    "@vercel/postgres": "^0.10.0",
+    "chart.js": "^4.5.1",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
+    "lucide-react": "^1.16.0",
+    "next": "^16.2.6",
+    "papaparse": "^5.5.3",
+    "react": "^19.2.6",
+    "react-chartjs-2": "^5.3.1",
+    "react-dom": "^19.2.6",
+    "svix": "^1.93.0",
+    "xlsx": "^0.18.5"
+  }
+}
