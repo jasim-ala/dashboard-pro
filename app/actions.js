@@ -88,7 +88,7 @@ export async function addWholesaleOrder(formData) {
     await logAudit('SALE_ADDED', `New wholesale order added for ${brand} — $${revenue}`)
     revalidatePath('/sales')
     revalidatePath('/admin')
-    return { success: true }
+    return { success: true, message: 'Order successfully saved to local database and synced with Firebase Firestore!' }
   } catch (err) {
     console.error('Failed to add order:', err)
     return { error: `Failed to add order: ${err.message}` }
