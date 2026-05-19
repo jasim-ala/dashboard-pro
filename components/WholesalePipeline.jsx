@@ -21,6 +21,28 @@ export default function WholesalePipeline({ initialTransactions = [] }) {
   const [result, setResult] = useState(null)
   const [showForm, setShowForm] = useState(false)
 
+  // Search & Filter State
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedBrand, setSelectedBrand] = useState('ALL')
+  const [selectedCategory, setSelectedCategory] = useState('ALL')
+  const [selectedStatus, setSelectedStatus] = useState('ALL')
+
+  // Dynamic filter computation
+  const filteredTransactions = transactions.filter(tx => {
+    const matchesSearch =
+      !searchQuery ||
+      tx.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tx.product_category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tx.id?.toString().toLowerCase().includes(searchQuery.toLowerCase());
+      
+    const matchesBrand = selectedBrand === 'ALL' || tx.brand === selectedBrand;
+    const matchesCategory = selectedCategory === 'ALL' || tx.product_category === selectedCategory;
+    const matchesStatus = selectedStatus === 'ALL' || tx.status === selectedStatus;
+    
+    return matchesSearch && matchesBrand && matchesCategory && matchesStatus;
+  });
+
+
   async function handleSubmit(formData) {
     const brand    = formData.get('brand')
     const category = formData.get('category')
@@ -52,7 +74,7 @@ export default function WholesalePipeline({ initialTransactions = [] }) {
       } else {
         // Mark committed
         setTransactions(prev => prev.map(t => t._optimistic ? { ...t, _optimistic: false } : t))
-        setResult({ success: true })
+        setResult({ success: true, message: res.message })
         setShowForm(false)
       }
     })
@@ -139,9 +161,102 @@ export default function WholesalePipeline({ initialTransactions = [] }) {
           color: result.error ? '#991b1b' : '#166534',
         }}>
           {result.error ? <AlertCircle size={15} /> : <CheckCircle2 size={15} />}
-          {result.error || 'Order logged successfully and pipeline updated.'}
+          {result.error || result.message || 'Order logged successfully and pipeline updated.'}
         </div>
       )}
+
+      {/* Search & Filters Panel */}
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '0.75rem',
+        padding: '1rem 1.5rem',
+        background: 'rgba(255, 255, 255, 0.015)',
+        borderBottom: '1px solid var(--border-glass)',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}>
+        {/* Search Input */}
+        <div style={{ flex: '1 1 240px', position: 'relative' }}>
+          <input
+            type="text"
+            placeholder="Search by Brand, Category, or ID..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.48rem 1rem',
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid var(--border-glass)',
+              borderRadius: '6px',
+              color: 'var(--text-primary)',
+              fontSize: '0.85rem',
+              outline: 'none',
+              transition: 'border-color 0.2s',
+            }}
+          />
+        </div>
+        
+        {/* Dropdown Filters */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+          {/* Brand Filter */}
+          <select
+            value={selectedBrand}
+            onChange={(e) => setSelectedBrand(e.target.value)}
+            style={filterSelectStyle}
+          >
+            <option value="ALL">All Brands</option>
+            {BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
+          </select>
+
+          {/* Category Filter */}
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            style={filterSelectStyle}
+          >
+            <option value="ALL">All Categories</option>
+            {PRODUCT_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+
+          {/* Status Filter */}
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            style={filterSelectStyle}
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="DELIVERED">Delivered</option>
+            <option value="PROCESSING">Processing</option>
+            <option value="PENDING">Pending</option>
+          </select>
+          
+          {/* Reset Filters button */}
+          {(searchQuery || selectedBrand !== 'ALL' || selectedCategory !== 'ALL' || selectedStatus !== 'ALL') && (
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedBrand('ALL');
+                setSelectedCategory('ALL');
+                setSelectedStatus('ALL');
+              }}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--accent-cyan)',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                padding: '0.2rem 0.5rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}
+            >
+              Reset
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* Transactions Table */}
       <div className="logs-table-wrapper">
@@ -158,16 +273,20 @@ export default function WholesalePipeline({ initialTransactions = [] }) {
             </tr>
           </thead>
           <tbody>
-            {transactions.length === 0 ? (
+            {filteredTransactions.length === 0 ? (
               <tr>
                 <td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '3rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
                     <TrendingUp size={22} style={{ opacity: 0.3 }} />
-                    <span>No transactions yet. Add your first wholesale order above.</span>
+                    <span>
+                      {transactions.length === 0 
+                        ? 'No transactions yet. Add your first wholesale order above.' 
+                        : 'No transactions match your search filters.'}
+                    </span>
                   </div>
                 </td>
               </tr>
-            ) : transactions.map((tx, i) => {
+            ) : filteredTransactions.map((tx, i) => {
               const pill = STATUS_STYLES[tx.status] || STATUS_STYLES.PENDING
               const shortId = tx._optimistic ? 'TX-NEW' : `TX-${tx.id?.slice(-4).toUpperCase()}`
               return (
@@ -220,3 +339,16 @@ const selectStyle = {
   ...inputStyle,
   appearance: 'auto',
 }
+
+const filterSelectStyle = {
+  padding: '0.45rem 0.8rem',
+  background: 'rgba(255, 255, 255, 0.03)',
+  border: '1px solid var(--border-glass)',
+  borderRadius: '6px',
+  color: 'var(--text-primary)',
+  fontSize: '0.82rem',
+  outline: 'none',
+  appearance: 'auto',
+  cursor: 'pointer',
+}
+
