@@ -3,6 +3,7 @@
 import { sql } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 import { clerkClient } from '@clerk/nextjs/server'
+import { db, FieldValue } from '@/lib/firebaseAdmin'
 
 // Internal constants (not exported — use lib/constants.js for client imports)
 import { BRANDS, PRODUCT_CATEGORIES, REGIONS } from '@/lib/constants'
@@ -57,8 +58,32 @@ export async function addWholesaleOrder(formData) {
     const date = new Date().toISOString().split('T')[0]
     const totalUnits = apparelUnits + lifestyleUnits
 
+    // 1️⃣ Save transaction to Postgres Local DB
     await sql`INSERT INTO sales_data (date, brand, product_category, units_sold, revenue)
               VALUES (${date}, ${brand}, ${category}, ${totalUnits}, ${revenue})`
+
+    // 2️⃣ Sync to Firebase Firestore collection (if configured)
+    if (db) {
+      try {
+        await db.collection('sales_data').add({
+          brand,
+          category,
+          amount: revenue,
+          revenue,
+          date,
+          unitsSold: totalUnits,
+          apparelUnits,
+          lifestyleUnits,
+          createdAt: FieldValue.serverTimestamp()
+        })
+        console.log('[Firebase] Transaction successfully stored in Firestore')
+      } catch (firestoreErr) {
+        console.error('[Firebase] Firestore write failed:', firestoreErr)
+        return { error: `Postgres updated successfully, but Firestore write failed: ${firestoreErr.message}` }
+      }
+    } else {
+      console.warn('[Firebase] Firestore not initialized. Skipping cloud sync.')
+    }
 
     await logAudit('SALE_ADDED', `New wholesale order added for ${brand} — $${revenue}`)
     revalidatePath('/sales')
@@ -66,9 +91,15 @@ export async function addWholesaleOrder(formData) {
     return { success: true }
   } catch (err) {
     console.error('Failed to add order:', err)
-    return { error: 'Failed to add order' }
+    return { error: `Failed to add order: ${err.message}` }
   }
 }
+
+// Support both function naming conventions
+export async function addSalesTransaction(formData) {
+  return addWholesaleOrder(formData)
+}
+
 
 export async function getSalesTransactions() {
   try {
